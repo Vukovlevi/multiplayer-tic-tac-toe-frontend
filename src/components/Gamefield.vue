@@ -106,17 +106,21 @@ socket.on("tie", () => {
   winnerStore.winner = "tie";
 });
 socket.on("sync-error", () => {
+  //if you are the second, make you and your cells "O"
   thisPlayer = "O";
   alert("Te lettél az 'O' játékos!");
   canClick = false;
   thisPlayerCells.forEach((cell) => {
-    const cells = document.querySelectorAll("[data-cell]");
-    const actualCell = cells.find(
-      (field) => field.getAttribute("data-cell") == cell
-    );
-    actualCell.classList.remove("X");
-    actualCell.classList.add("O");
+    displayClick(cell, "O");
   });
+});
+socket.on("X-sync", () => {
+  //if you are the first, make opponent cells "O"
+  alert("Te vagy az 'X' játékos, és te következel!");
+  opponentPlayerCells.forEach((cell) => {
+    displayClick(cell, "O");
+  });
+  canClick = true;
 });
 
 //handling the user clicks
