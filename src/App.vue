@@ -9,7 +9,7 @@ import { useWinLoseStore } from "../stores/winLose";
 import exitGame from "./utilities/exit";
 
 //socket.io config
-const PORT = import.meta.env.VITE_APP_PORT || "http://localhost:3000";
+const PORT = import.meta.env.VITE_APP_PORT;
 const socket = io(PORT);
 
 //stores and utilities setup
@@ -26,8 +26,9 @@ const room = localStorage.getItem("code");
 if (username == null && room != null) backToLogin();
 if (username != null && room != null)
   socket.emit("check-room", { username: username, room: room });
+const isGameOver = ref();
 const preIsGameOver = sessionStorage.getItem("isGameOver") || false;
-const isGameOver = ref(preIsGameOver);
+isGameOver.value = preIsGameOver;
 
 //socket event handlers
 socket.on("no-room", () => {
@@ -67,7 +68,7 @@ winLose.$subscribe(() => {
 
 function nextRound() {
   isGameOver.value = false;
-  sessionStorage.setItem("isGameOver", isGameOver.value);
+  sessionStorage.removeItem("isGameOver");
   document.location.reload();
 }
 </script>

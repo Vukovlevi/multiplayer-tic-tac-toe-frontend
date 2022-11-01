@@ -4,7 +4,7 @@ import { useWinnerStore } from "../../stores/winner";
 import exitGame from "../utilities/exit";
 
 //socket.io config
-const PORT = import.meta.env.VITE_APP_PORT || "http://localhost:3000";
+const PORT = import.meta.env.VITE_APP_PORT;
 const socket = io(PORT);
 
 //stores and utilities setup

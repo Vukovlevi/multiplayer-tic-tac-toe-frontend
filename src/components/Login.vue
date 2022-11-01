@@ -4,7 +4,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 //socket.io config
-const PORT = import.meta.env.VITE_APP_PORT || "http://localhost:3000";
+const PORT = import.meta.env.VITE_APP_PORT;
 const socket = io(PORT);
 
 //configuring the emits to the App.vue
@@ -27,7 +27,7 @@ function connect() {
 
 //call a game code from the server
 function callCode() {
-  axios.get(`${PORT}/generatecode`).then((resp) => {
+  axios.get("/generatecode").then((resp) => {
     const data = resp.data;
     const error = data.error || null;
     if (error != null) {
