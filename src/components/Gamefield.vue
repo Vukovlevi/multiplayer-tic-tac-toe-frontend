@@ -110,9 +110,8 @@ socket.on("sync-error", () => {
   thisPlayer = "O";
   alert("Te lettél az 'O' játékos!");
   canClick = false;
-  thisPlayerCells.forEach((cell) => {
-    displayClick(cell, "O");
-  });
+  thisPlayerCells.forEach((cell) => displayClick(cell, "O"));
+  opponentPlayerCells.forEach((cell) => displayClick(cell, "X"));
 });
 socket.on("X-sync", () => {
   //if you are the first, make opponent cells "O"
@@ -122,23 +121,34 @@ socket.on("X-sync", () => {
   });
   canClick = true;
 });
+socket.on("you-are-O", () => {
+  thisPlayer = "O";
+  canClick = true;
+  opponentPlayerCells[0] = thisPlayerCells[0];
+  thisPlayerCells.splice(0, 1);
+  displayClick(opponentPlayerCells[0], "X");
+  alert("Te vagy az 'O' játékos, és te következel!");
+});
 
 //handling the user clicks
 function registerClick(cell) {
   //if its not your turn, return immediately
   if (!canClick) return;
   //if its the first click then set the users on the server
-  if (thisPlayerCells.length == 0 && opponentPlayerCells.length == 0) {
-    if (thisPlayer == null) thisPlayer = "X";
-    socket.emit("set-user", { username: username, room: room });
-  }
   //if the user clicked on an already registered cell then return
   if (thisPlayerCells.includes(cell) || opponentPlayerCells.includes(cell))
     return;
   //if the click is valid then store, diplay and send it to the server
   thisPlayerCells.push(cell);
   canClick = false;
-  displayClick(cell, thisPlayer);
+  displayClick(cell, thisPlayer || "X");
+  //this gets triggered on the first click and never again
+  if (thisPlayerCells.length <= 1 && opponentPlayerCells.length == 0) {
+    if (thisPlayer == null) thisPlayer = "X";
+    socket.emit("set-user", { username: username, room: room, cell: cell });
+    return;
+  }
+  //this gets triggered after the first click
   socket.emit("click", { cell: cell, username: username, room: room });
   if (isWinner()) gameOver(); //if we have the winner, call the gameOver
 }
@@ -185,6 +195,7 @@ function displayClick(cell, player) {
   const cells = document.querySelectorAll("[data-cell]");
   cells.forEach((element) => {
     if (element.getAttribute("data-cell") == cell) {
+      element.classList = "cell";
       element.innerHTML = player;
       element.classList.add(player);
     }
