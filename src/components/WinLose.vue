@@ -18,8 +18,8 @@ const emits = defineEmits(["nextRound"]);
 const room = localStorage.getItem("code");
 let yourState = "";
 let winner = "";
-let xColor = false;
-let tie = false;
+let xColor;
+let tie;
 const preWinnerStore =
   JSON.parse(sessionStorage.getItem("winnerStore")) || null;
 //if the current state is gameOver, display that state
@@ -32,6 +32,8 @@ socket.emit("next-round", { preConnect: true, room: room });
 
 //in case of game over, handle and display it
 winnerStore.$subscribe(() => {
+  xColor = false;
+  tie = false;
   displayWinner();
   const storageWinnerStore = {
     winner: winnerStore.winner,

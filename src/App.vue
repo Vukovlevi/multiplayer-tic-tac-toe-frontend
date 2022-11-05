@@ -80,6 +80,7 @@ function nextRound() {
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
 :root {
   --bg-color: #1a2b32;
   --place-bg-color: #1f3540;
@@ -99,6 +100,7 @@ html,
 body {
   width: 100%;
   height: 100%;
+  font-family: "Quicksand", sans-serif;
 }
 body {
   background-color: var(--bg-color);
