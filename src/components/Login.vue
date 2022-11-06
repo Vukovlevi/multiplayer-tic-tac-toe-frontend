@@ -16,10 +16,28 @@ const codeInput = ref("");
 const username = ref(preSetUsername);
 if (preSetUsername != null) username.value = preSetUsername;
 
+//socket event handlers
+socket.on("same-username", () => sameUsername());
+socket.on("valid-connect", () => connect());
+
+//they cant have the same username
+function sameUsername() {
+  username.value = "";
+  alert("Nem lehet ugyanaz a felhasználónevetek!");
+  codeInput.value = localStorage.getItem("code");
+}
+
 //handling the connect
-function connect() {
-  if (codeInput.value == "" || username.value == "") return; //TODO maybe throw an error to the user
+function connectEmit() {
+  if (codeInput.value == "" || username.value == "") {
+    alert("Adj meg egy felhasználónevet és kódot!");
+    return;
+  }
+  localStorage.setItem("code", codeInput.value);
   socket.emit("user-data", { username: username.value, code: codeInput.value });
+}
+
+function connect() {
   localStorage.setItem("code", codeInput.value);
   localStorage.setItem("username", username.value);
   emits("connect"); //this is a local emit to the App.vue
@@ -64,7 +82,7 @@ function callCode() {
       />
       <div class="buttons df">
         <button class="code-generator btn" @click="callCode">Kód kérése</button>
-        <button type="submit" class="connect btn" @click="connect">
+        <button type="submit" class="connect btn" @click="connectEmit">
           Csatlakozás
         </button>
       </div>
